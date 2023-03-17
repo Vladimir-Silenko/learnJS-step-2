@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        td,
+        th {
+            border: 1px solid black;
+            padding: 3px;
+            text-align: center;
+        }
+
+        th {
+            font-weight: bold;
+            background-color: #E6E6E6;
+        }
+    </style>
+</head>
+
+<body>
+
+
+    <div id="calendar"></div>
+
+    <script>
+        //Создайте календарь в виде таблицы
+        let calendar = document.querySelector('#calendar')
+
+        function createCalendar(elem, year, month) {
+
+            const DAYS_OF_WEEK = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+            const date = new Date(year, month, 1);
+            const calendarTable = document.createElement('table');
+
+
+            const tableHeader = calendarTable.createTHead();
+            const headerRow = tableHeader.insertRow();
+
+
+            DAYS_OF_WEEK.forEach(item => {
+                const headerCell = document.createElement('th')
+                headerCell.textContent = item
+                headerRow.appendChild(headerCell)
+
+            })
+
+
+            const tableBody = calendarTable.createTBody()
+            let weekRow = tableBody.insertRow()
+            for (let i = 1; i < date.getDay(); i++) {
+                weekRow.insertCell();
+            }
+            while (date.getMonth() === month) {
+                const dayCell = weekRow.insertCell();
+                dayCell.textContent = date.getDate();
+                date.setDate(date.getDate() + 1);
+                if (date.getDay() === 1) {
+                    weekRow = tableBody.insertRow();
+                }
+            }
+            elem.append(calendarTable)
+        }
+
+        createCalendar(calendar, 2023, 2);
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        /* общие стили для таблицы, изменять их не нужно */
+
+        th {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        td {
+            width: 150px;
+            white-space: nowrap;
+            text-align: center;
+            vertical-align: middle;
+            padding: 10px;
+            position: relative;
+        }
+
+        .nw {
+            background-color: #999;
+        }
+
+        .n {
+            background-color: #03f;
+            color: #fff;
+        }
+
+        .ne {
+            background-color: #ff6;
+        }
+
+        .w {
+            background-color: #ff0;
+        }
+
+        .c {
+            background-color: #60c;
+            color: #fff;
+        }
+
+        .e {
+            background-color: #09f;
+            color: #fff;
+        }
+
+        .sw {
+            background-color: #963;
+            color: #fff;
+        }
+
+        .s {
+            background-color: #f60;
+            color: #fff;
+        }
+
+        .se {
+            background-color: #0c3;
+            color: #fff;
+        }
+
+        #textarea_elem {
+            width: 400px;
+            height: 200px;
+            border: 1px solid black;
+        }
+
+        td {
+            width: 150px;
+            height: 150px;
+            border: 1px solid #ccc;
+            padding: 0;
+            text-align: center;
+            position: relative;
+        }
+
+        table {
+            margin-top: 20px;
+        }
+
+        .ok {
+            position: absolute;
+            z-index: 1000;
+            left: 0;
+            bottom: -22px;
+        }
+
+        .cancel {
+            position: absolute;
+            z-index: 1000;
+            left: 35px;
+            bottom: -22px;
+        }
+
+        .textarea_div {
+            resize: none;
+            position: absolute;
+            padding: 0;
+            top: 0;
+            left: 0;
+            height: 150px;
+            width: 150px;
+        }
+    </style>
+</head>
+
+<body>
+
+
+
+    <p>Кликните на ячейку таблицы, чтобы отредактировать её. Нажмите ОК или ОТМЕНА, когда закончите.</p>
+
+    <table id="bagua-table">
+        <tr>
+            <th colspan="3">Квадрат <em>Bagua</em>: Направление, Элемент, Цвет, Значение</th>
+        </tr>
+        <tr>
+            <td class="nw"><strong>Северо-Запад</strong>
+                <br>Металл
+                <br>Серебро
+                <br>Старейшины
+            </td>
+            <td class="n"><strong>Север</strong>
+                <br>Вода
+                <br>Синий
+                <br>Перемены
+            </td>
+            <td class="ne"><strong>Северо-Восток</strong>
+                <br>Земля
+                <br>Жёлтый
+                <br>Направление
+            </td>
+        </tr>
+        <tr>
+            <td class="w"><strong>Запад</strong>
+                <br>Металл
+                <br>Золото
+                <br>Молодость
+            </td>
+            <td class="c"><strong>Центр</strong>
+                <br>Всё
+                <br>Пурпурный
+                <br>Гармония
+            </td>
+            <td class="e"><strong>Восток</strong>
+                <br>Дерево
+                <br>Синий
+                <br>Будущее
+            </td>
+        </tr>
+        <tr>
+            <td class="sw"><strong>Юго-Запад</strong>
+                <br>Земля
+                <br>Коричневый
+                <br>Спокойствие
+            </td>
+            <td class="s"><strong>Юг</strong>
+                <br>Огонь
+                <br>Оранжевый
+                <br>Слава
+            </td>
+            <td class="se"><strong>Юго-Восток</strong>
+                <br>Дерево
+                <br>Зеленый
+                <br>Роман
+            </td>
+        </tr>
+
+    </table>
+
+
+    <script>
+        const table = document.querySelector("table");
+
+        let editing = false;
+
+        let editionItems;
+
+        table.addEventListener("click", changeInnerHTML);
+
+        function changeInnerHTML(e) {
+            if (!table.contains(e.target)) return;
+
+            if (e.target.closest(".ok") || e.target.closest(".cancel")) {
+                finishEdit(editionItems, e.target);
+            } else if (e.target.closest("td")) {
+                if (editing) return;
+
+                let elem = e.target.tagName !== "TD" ? e.target.parentElement : e.target;
+
+                editing = true;
+                const textarea = createTextarea(elem);
+
+                const btnOk = createBtn("ok");
+                const btnCancel = createBtn("cancel");
+
+                elem.append(textarea);
+                elem.append(btnOk);
+                elem.append(btnCancel);
+                textarea.focus();
+
+                editionItems = {
+                    div: elem,
+                    textarea: textarea,
+                    buttonOk: btnOk,
+                    buttonCancel: btnCancel
+                };
+            }
+        }
+
+        function createTextarea(div) {
+            const elem = document.createElement("textarea");
+            elem.classList.add("textarea_div");
+            elem.value = div.innerHTML;
+            return elem;
+        }
+
+        function createBtn(btnType) {
+            const btn = document.createElement("button");
+            btn.classList.add(btnType);
+            btn.textContent = btnType.toUpperCase();
+            return btn;
+        }
+
+        function finishEdit(elems, btn) {
+            if (btn.closest(".ok")) {
+                elems.div.innerHTML = elems.textarea.value;
+            }
+            elems.textarea.remove();
+            elems.buttonOk.remove();
+            elems.buttonCancel.remove();
+            editing = false;
+        }
+    </script>
+
+</body>
+
+</html>
